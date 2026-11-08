@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tổng quan - CRM VTI</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="app">
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <div class="main">
+      <header class="topbar">
+        <h1>Tổng quan</h1>
+        <div id="current-user"></div>
+      </header>
+
+      <section id="stats" class="stats"></section>
+
+      <section class="card">
+        <h2>Cơ hội bán hàng gần đây</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Tên cơ hội</th>
+              <th>Khách hàng</th>
+              <th>Giá trị</th>
+              <th>Giai đoạn</th>
+            </tr>
+          </thead>
+          <tbody id="deals-body"></tbody>
+        </table>
+      </section>
+    </div>
+  </div>
+
+  <script src="../js/session.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/dashboard.js"></script>
+</body>
+</html>

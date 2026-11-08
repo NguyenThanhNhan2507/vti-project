@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Người dùng - CRM VTI</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-roles="admin">
+  <div class="app">
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <div class="main">
+      <header class="topbar">
+        <h1>Quản lý người dùng</h1>
+        <div id="current-user"></div>
+      </header>
+
+      <section class="card">
+        <h2>Thêm người dùng mới</h2>
+        <form id="create-form" class="form-grid">
+          <label>
+            Tài khoản
+            <input name="username" required>
+          </label>
+          <label>
+            Họ và tên
+            <input name="fullName" required>
+          </label>
+          <label>
+            Mật khẩu tạm (tối thiểu 6 ký tự)
+            <input name="password" type="password" minlength="6" required>
+          </label>
+          <label>
+            Vai trò
+            <select name="role">
+              <option value="sales">Nhân viên kinh doanh</option>
+              <option value="manager">Quản lý</option>
+              <option value="admin">Quản trị viên</option>
+            </select>
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Thêm người dùng</button>
+          </div>
+        </form>
+        <p id="form-message" class="message" hidden></p>
+      </section>
+
+      <section class="card">
+        <h2>Danh sách người dùng</h2>
+        <p id="table-message" class="message" hidden></p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Tài khoản</th>
+              <th>Họ và tên</th>
+              <th>Vai trò</th>
+              <th>Trạng thái</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="users-body"></tbody>
+        </table>
+      </section>
+    </div>
+  </div>
+
+  <script src="../js/session.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/users.js"></script>
+</body>
+</html>

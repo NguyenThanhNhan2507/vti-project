@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Khách hàng - CRM VTI</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="app">
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <div class="main">
+      <header class="topbar">
+        <h1>Khách hàng</h1>
+        <div id="current-user"></div>
+      </header>
+
+      <section class="card">
+        <h2>Thêm khách hàng mới</h2>
+        <form id="create-form" class="form-grid">
+          <label>
+            Tên khách hàng
+            <input name="name" required>
+          </label>
+          <label>
+            Số điện thoại
+            <input name="phone" required>
+          </label>
+          <label>
+            Công ty
+            <input name="company">
+          </label>
+          <label>
+            Email
+            <input name="email" type="email">
+          </label>
+          <label id="owner-field" hidden>
+            Người phụ trách
+            <select name="ownerId" id="owner-select"></select>
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Thêm khách hàng</button>
+          </div>
+        </form>
+        <p id="form-message" class="message" hidden></p>
+      </section>
+
+      <section class="card">
+        <div class="toolbar">
+          <input id="search" class="search" type="search" placeholder="Tìm theo tên, công ty hoặc số điện thoại">
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Tên</th>
+              <th>Công ty</th>
+              <th>Số điện thoại</th>
+              <th>Email</th>
+              <th>Phụ trách</th>
+            </tr>
+          </thead>
+          <tbody id="customers-body"></tbody>
+        </table>
+      </section>
+    </div>
+  </div>
+
+  <script src="../js/session.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/customers.js"></script>
+</body>
+</html>
