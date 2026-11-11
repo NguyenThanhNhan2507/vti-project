@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chi tiết khách hàng - CRM VTI</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="app">
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <div class="main">
+      <header class="topbar">
+        <h1>Chi tiết khách hàng</h1>
+        <div id="current-user"></div>
+      </header>
+
+      <p><a href="customers.html">← Quay lại danh sách khách hàng</a></p>
+
+      <section class="card">
+        <h2>Thông tin khách hàng</h2>
+        <form id="edit-form" class="form-grid">
+          <label>
+            Tên khách hàng
+            <input name="name" required>
+          </label>
+          <label>
+            Số điện thoại
+            <input name="phone" required>
+          </label>
+          <label>
+            Công ty
+            <input name="company">
+          </label>
+          <label>
+            Email
+            <input name="email" type="email">
+          </label>
+          <label id="owner-field" hidden>
+            Người phụ trách
+            <select name="ownerId" id="owner-select"></select>
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+          </div>
+        </form>
+        <p id="edit-message" class="message" hidden></p>
+      </section>
+
+      <section class="card">
+        <h2>Lịch sử liên hệ</h2>
+        <form id="contact-form" class="form-grid">
+          <label>
+            Loại liên hệ
+            <select name="contactType">
+              <option value="call">Gọi điện</option>
+              <option value="email">Email</option>
+              <option value="meeting">Gặp mặt</option>
+            </select>
+          </label>
+          <label>
+            Ghi chú
+            <input name="note">
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Thêm liên hệ</button>
+          </div>
+        </form>
+        <p id="contact-message" class="message" hidden></p>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Thời gian</th>
+              <th>Loại</th>
+              <th>Ghi chú</th>
+              <th>Người ghi</th>
+            </tr>
+          </thead>
+          <tbody id="contacts-body"></tbody>
+        </table>
+      </section>
+    </div>
+  </div>
+
+  <script src="../js/session.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/customer-detail.js"></script>
+</body>
+</html>

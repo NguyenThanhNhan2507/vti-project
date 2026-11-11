@@ -20,6 +20,25 @@ function toDto(row) {
   };
 }
 
+// Đọc mã số nguyên dương từ URL, trả về null nếu không hợp lệ.
+function parseId(value) {
+  const id = Number(value);
+  return Number.isInteger(id) && id > 0 ? id : null;
+}
+
+// Trả về khách hàng nếu người đăng nhập được phép xem, ngược lại trả về null.
+async function findVisibleCustomer(user, id) {
+  const result = await pool.query(
+    `SELECT c.id, c.name, c.phone, c.email, c.company, c.owner_id,
+            u.full_name AS owner_name, c.created_at
+       FROM customers c
+       LEFT JOIN users u ON u.id = c.owner_id
+      WHERE c.id = $1 AND ($2::boolean OR c.owner_id = $3)`,
+    [id, canSeeAll(user), user.id]
+  );
+  return result.rows[0] || null;
+}
+
 // GET /api/customers?q=từ-khóa
 async function listCustomers(req, res) {
   const keyword = String(req.query.q || '').trim();
@@ -50,6 +69,25 @@ async function listCustomers(req, res) {
       params
     );
     return res.json({ customers: result.rows.map(toDto) });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Lỗi máy chủ' });
+  }
+}
+
+// GET /api/customers/:id
+async function getCustomer(req, res) {
+  const id = parseId(req.params.id);
+  if (!id) {
+    return res.status(400).json({ message: 'Mã khách hàng không hợp lệ' });
+  }
+
+  try {
+    const row = await findVisibleCustomer(req.user, id);
+    if (!row) {
+      return res.status(404).json({ message: 'Không tìm thấy khách hàng' });
+    }
+    return res.json({ customer: toDto(row) });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Lỗi máy chủ' });
@@ -106,6 +144,98 @@ async function createCustomer(req, res) {
   }
 }
 
+// PATCH /api/customers/:id
+// Gửi đủ các trường: email hoặc công ty để trống sẽ được xóa. Chỉ admin và quản lý được đổi người phụ trách.
+async function updateCustomer(req, res) {
+  const id = parseId(req.params.id);
+  if (!id) {
+    return res.status(400).json({ message: 'Mã khách hàng không hợp lệ' });
+  }
+
+  const { name, phone, email, company, ownerId } = req.body || {};
+  if (!name || !String(name).trim() || !phone || !String(phone).trim()) {
+    return res.status(400).json({ message: 'Thiếu tên hoặc số điện thoại' });
+  }
+
+  let owner = null;
+  if (canSeeAll(req.user) && ownerId !== undefined && ownerId !== null && ownerId !== '') {
+    owner = Number(ownerId);
+    if (!Number.isInteger(owner)) {
+      return res.status(400).json({ message: 'Người phụ trách không hợp lệ' });
+    }
+  }
+
+  try {
+    const existing = await findVisibleCustomer(req.user, id);
+    if (!existing) {
+      return res.status(404).json({ message: 'Không tìm thấy khách hàng' });
+    }
+
+    await pool.query(
+      `UPDATE customers
+          SET name = $2, phone = $3, email = $4, company = $5,
+              owner_id = COALESCE($6, owner_id)
+        WHERE id = $1`,
+      [
+        id,
+        String(name).trim(),
+        String(phone).trim(),
+        (email || '').trim() || null,
+        (company || '').trim() || null,
+        owner,
+      ]
+    );
+
+    await pool.query(
+      'INSERT INTO audit_logs (user_id, action, target_table, target_id) VALUES ($1, $2, $3, $4)',
+      [req.user.id, 'UPDATE_CUSTOMER', 'customers', id]
+    );
+
+    const row = await findVisibleCustomer(req.user, id);
+    return res.json({ customer: toDto(row) });
+  } catch (err) {
+    if (err.code === '23505') {
+      return res.status(409).json({ message: 'Số điện thoại đã tồn tại' });
+    }
+    if (err.code === '23503') {
+      return res.status(400).json({ message: 'Người phụ trách không tồn tại' });
+    }
+    console.error(err);
+    return res.status(500).json({ message: 'Lỗi máy chủ' });
+  }
+}
+
+// DELETE /api/customers/:id (chỉ admin và quản lý)
+// Khách đang có cơ hội bán hàng thì không xóa được; liên hệ của khách sẽ bị xóa theo.
+async function deleteCustomer(req, res) {
+  const id = parseId(req.params.id);
+  if (!id) {
+    return res.status(400).json({ message: 'Mã khách hàng không hợp lệ' });
+  }
+
+  try {
+    const deals = await pool.query('SELECT COUNT(*)::int AS total FROM deals WHERE customer_id = $1', [id]);
+    if (deals.rows[0].total > 0) {
+      return res.status(409).json({ message: 'Khách hàng đang có cơ hội bán hàng nên không thể xóa' });
+    }
+
+    const result = await pool.query('DELETE FROM customers WHERE id = $1', [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Không tìm thấy khách hàng' });
+    }
+
+    await pool.query(
+      'INSERT INTO audit_logs (user_id, action, target_table, target_id) VALUES ($1, $2, $3, $4)',
+      [req.user.id, 'DELETE_CUSTOMER', 'customers', id]
+    );
+
+    return res.json({ message: 'Đã xóa khách hàng' });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Lỗi máy chủ' });
+  }
+}
+
 // GET /api/customers/assignees: danh sách người có thể được chọn làm người phụ trách (chỉ admin và quản lý gọi).
 async function listAssignees(req, res) {
   try {
@@ -123,4 +253,13 @@ async function listAssignees(req, res) {
   }
 }
 
-module.exports = { listCustomers, createCustomer, listAssignees };
+module.exports = {
+  listCustomers,
+  getCustomer,
+  createCustomer,
+  updateCustomer,
+  deleteCustomer,
+  listAssignees,
+  findVisibleCustomer,
+  parseId,
+};

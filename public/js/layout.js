@@ -4,7 +4,7 @@
   const NAV_ITEMS = [
     { label: 'Tổng quan', href: 'dashboard.html', roles: ['admin', 'manager', 'sales'] },
     { label: 'Khách hàng', href: 'customers.html', roles: ['admin', 'manager', 'sales'] },
-    { label: 'Cơ hội bán hàng', href: null, roles: ['admin', 'manager', 'sales'] },
+    { label: 'Cơ hội bán hàng', href: 'deals.html', roles: ['admin', 'manager', 'sales'] },
     { label: 'Người dùng', href: 'users.html', roles: ['admin'] },
     { label: 'Nhật ký hoạt động', href: null, roles: ['admin'] }
   ];

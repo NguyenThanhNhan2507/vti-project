@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cơ hội bán hàng - CRM VTI</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="app">
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <div class="main">
+      <header class="topbar">
+        <h1>Cơ hội bán hàng</h1>
+        <div id="current-user"></div>
+      </header>
+
+      <section class="card">
+        <h2>Thêm cơ hội mới</h2>
+        <form id="create-form" class="form-grid">
+          <label>
+            Khách hàng
+            <select name="customerId" id="customer-select" required></select>
+          </label>
+          <label>
+            Tên cơ hội
+            <input name="title" required>
+          </label>
+          <label>
+            Giá trị (VNĐ)
+            <input name="value" type="number" min="0" step="1" required>
+          </label>
+          <label>
+            Giai đoạn
+            <select name="stage">
+              <option value="NEW">Mới</option>
+              <option value="CONSULTING">Đang tư vấn</option>
+              <option value="WON">Thành công</option>
+              <option value="LOST">Thất bại</option>
+            </select>
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Thêm cơ hội</button>
+          </div>
+        </form>
+        <p id="form-message" class="message" hidden></p>
+      </section>
+
+      <section class="card">
+        <h2>Danh sách cơ hội</h2>
+        <p id="table-message" class="message" hidden></p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Tên cơ hội</th>
+              <th>Khách hàng</th>
+              <th>Giá trị</th>
+              <th>Giai đoạn</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="deals-body"></tbody>
+        </table>
+      </section>
+    </div>
+  </div>
+
+  <script src="../js/session.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/deals.js"></script>
+</body>
+</html>

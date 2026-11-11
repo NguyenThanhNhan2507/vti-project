@@ -331,3 +331,11 @@ body {
   .main { padding: 16px; }
   .topbar { flex-wrap: wrap; }
 }
+
+/* ===== Liên kết trong bảng và nút xóa ===== */
+.table a { color: var(--primary); }
+
+.btn-small.danger {
+  color: var(--danger);
+  border-color: #fecaca;
+}
