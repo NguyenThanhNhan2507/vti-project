@@ -108,3 +108,10 @@ Chạy dưới dạng dịch vụ systemd để tự khởi động lại khi m�
 - File `.env` không được đưa lên repo. Chỉ giữ `.env.example`.
 - Mật khẩu người dùng được băm bằng bcrypt, không lưu dạng gốc.
 - Khi tài khoản bị khóa, người dùng nhập đúng mật khẩu sẽ thấy thông báo liên hệ quản trị viên.
+
+## Triển khai tự động
+
+- Máy điều khiển Ansible (192.168.1.110) kiểm tra nhánh `main` trên GitHub mỗi 5 phút bằng cron.
+- Khi có commit mới, playbook `deploy_crm.yml` được chạy: kéo code mới, cài thư viện npm, khởi động lại service `vti-project` và kiểm tra web.
+- Triển khai thủ công: `ansible-playbook -i inventory.ini deploy_crm.yml` (chạy trên máy điều khiển).
+
