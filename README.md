@@ -111,7 +111,7 @@ Chạy dưới dạng dịch vụ systemd để tự khởi động lại khi m�
 
 ## Triển khai tự động
 
-- Máy điều khiển Ansible (192.168.1.110) kiểm tra nhánh `main` trên GitHub mỗi 5 phút bằng cron.
+- Máy điều khiển Ansible (192.168.1.110) kiểm tra nhánh `main` trên GitHub mỗi 5 phút bằng cron
 - Khi có commit mới, playbook `deploy_crm.yml` được chạy: kéo code mới, cài thư viện npm, khởi động lại service `vti-project` và kiểm tra web.
-- Triển khai thủ công: `ansible-playbook -i inventory.ini deploy_crm.yml` (chạy trên máy điều khiển).
+- Triển khai thủ công: `ansible-playbook -i inventory.ini deploy_crm.yml` (chạy trên máy điều khiển)
 
