@@ -1,4 +1,4 @@
-# CRM VTI
+CRM VTI
 
 Hệ thống quản lý khách hàng và cơ hội bán hàng nội bộ, làm theo đề tài "Xây dựng dịch vụ web nội bộ" (Mock Project SAP).
 
